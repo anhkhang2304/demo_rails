@@ -1,0 +1,21 @@
+build:
+  image: anhkhang2304/rails-app-docker
+  commands:
+    - cp config/database-ci.yml config/database.yml
+    - ruby --version
+    - bundle install
+    - RAILS_ENV=test rake db:create db:migrate
+    - framgia-ci run
+compose:
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ci_test
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: root
+  redis:
+    image: redis:3.0.7
+cache:
+  mount:
+    - .git
